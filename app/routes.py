@@ -282,7 +282,7 @@ class Listing(Resource):
                     continue
                 l = {"listing_id": listing.id,
                      "quantity": listing.quantity, "expiry": listing.expiry, "description": listing.description,
-                     "type": listing.type, "image": listing.image, "lat": int(listing.lat), "lng": int(listing.lng), "donor_id": listing.donor_id,
+                     "type": listing.type, "image": listing.image, "lat": float(listing.lat), "lng": float(listing.lng), "donor_id": listing.donor_id,
                      "street": address.street, "landmark": address.landmark, "city": address.city, "country": address.country, 
                      'organisation': donor.organisation, "module": listing.module}
                 listing_list.append(l)
@@ -302,7 +302,7 @@ class Listing(Resource):
                                             "quantity": listing.quantity, "expiry": listing.expiry, "description": listing.description,
                                             "type": listing.type, "image": listing.image, "donor_id": listing.donor_id, "street": address.street,
                                             "landmark": address.landmark, "city": address.city, "country": address.country, 'organisation': donor.organisation,
-                                            "module": listing.module, "lat": int(listing.lat), "lng": int(listing.lng)}
+                                            "module": listing.module, "lat": float(listing.lat), "lng": float(listing.lng)}
             return listing_dict
         else:
             return {"message": "send_all not given"}, 400
