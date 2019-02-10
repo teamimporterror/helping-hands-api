@@ -55,9 +55,9 @@ admin.add_view(ModelView(Address, db.session))
 admin.add_view(ModelView(Beneficiary, db.session))
 admin.add_view(ModelView(Listings, db.session))
 admin.add_view(ModelView(Orders, db.session))
-admin.add_view(ModelView(Reviews, db.session))
 admin.add_view(ModelView(AdminModel, db.session))
 admin.add_view(ModelView(Modules, db.session))
+admin.add_view(ModelView(Event, db.session))
 
 
 ALLOWED_EXTENSIONS = set(['jpg', 'jpeg'])
@@ -362,9 +362,9 @@ class Order(Resource):
                        listing=listing, quantity=quantity, module=json_data.get('module'), time_stamp=json_data.get('time_stamp'))
             db.session.add(o)
             db.session.commit()
-            # send_mail(to_email=donor.email, donor=donor,
-            #           beneficiary=beneficiary, listing=listing)
-        return {"message": "Your order has been placed.", "error": 0}, 200
+            send_mail(to_email=donor.email, donor=donor,
+                      beneficiary=beneficiary, listing=listing)
+        return {"message": "Your order has been placed and email has been sent", "error": 0}, 200
 
 
 class DonorListings(Resource):
