@@ -112,4 +112,4 @@ class Event(db.Model):
     phone_no = db.Column(db.String(25))
     image = db.Column(db.String(100))
     donor_id = db.Column(db.Integer, db.ForeignKey('donor.id'))
-    beneficiary_id = db.Column(db.Integer, db.ForeignKey('benefciary.id'))
+    beneficiary_id = db.Column(db.Integer, db.ForeignKey('beneficiary.id'))
