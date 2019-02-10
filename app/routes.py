@@ -706,7 +706,7 @@ def mark_verify():
         json_data = request.json
         beneficiary_id = json_data.get("beneficiary_id")
         beneficiary = Beneficiary.query.get(beneficiary_id)
-        beneficiary.status == json_data.get('status')  
+        beneficiary.status = json_data.get('status')  
         db.session.commit()
         return jsonify({"message": "status updated for beneficiary"}), 200
 
