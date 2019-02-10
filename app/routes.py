@@ -630,8 +630,8 @@ class UploadImage(Resource):
             filename = secure_filename(file.filename)
             path = os.path.join(app.root_path, filename)
             file.save(path)
-            if float(score) > 0.7:
-                return {"message": "This image may not be appropriate. Please choose a different image."}
+            # if float(score) > 0.7:
+            #     return {"message": "This image may not be appropriate. Please choose a different image."}
             url = upload_to_imgur(path)
             return {"url": url}, 200
 
@@ -710,7 +710,19 @@ def mark_verify():
         json_data = request.json
         beneficiary.status == json_data.get('status')  
         db.session.commit()
-        return {"message": "status updated for beneficiary"}, 200
+        return jsonify({"message": "status updated for beneficiary"}), 200
+
+
+@app.route('/admin/show_all_pending', methods=['GET'])
+def show_all_pending():
+    beneficiaries = Beneficiary.query.filter_by(status='pending').all()
+    beneficiaries_list = []
+    for beneficiary in beneficiaries:
+        d = {'id': beneficiary.id, 'phone_no': beneficiary.phone_no,
+                'email': beneficiary.email, 'username': beneficiary.username, 'module': beneficiary.module}
+        beneficiaries_list.append(d)
+    return jsonify({'beneficiaries': beneficiaries_list}), 200
+
 
 
 class BeneficiaryVerification(Resource):
@@ -782,6 +794,12 @@ class EventRoute(Resource):
                  "end_date": event.end_date, "image": event.image, "name": event.name}
             event_list.append(e)
         return {"events": event_list}, 200
+
+# @app.route('/show_all')
+# def show_all_listing_latitudes():
+#     listings = Listings.query.filter(id==1)
+#     print(listings)
+#     return "hello"
 
 
 api.add_resource(Login, '/<module>/login')
