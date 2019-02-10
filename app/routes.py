@@ -700,7 +700,18 @@ class LoginAdmin(Resource):
         else:
             return None
 
-@app.route('/')
+@app.route('/mark_verify', methods=['POST'])
+@token_required
+def mark_verify():
+        token = request.headers.get("x-access-token")
+        token_data = jwt.decode(token, app.config['SECRET_KEY'])
+        username = token_data.get("username")
+        beneficiary = Beneficiary.query.filter_by(username=username).first()
+        json_data = request.json
+        beneficiary.status == json_data.get('status')  
+        db.session.commit()
+        return {"message": "status updated for beneficiary"}, 200
+
 
 class BeneficiaryVerification(Resource):
     @token_required
