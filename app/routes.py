@@ -35,7 +35,7 @@ def send_mail(to_email, donor, beneficiary, listing):
                 ],
                 "from": {
                     "email": app.config['SENDGRID_DEFAULT_FROM'],
-                    "name": "BetterPledge"
+                    "name": "Helping Hands"
                 },
                 "content": [
                     {
@@ -771,12 +771,13 @@ class EventRoute(Resource):
             event = Event(name=json_data.get('name'), description=json_data.get('description'),
                           start_date=json_data.get('start_date'), end_date=json_data.get('end_date'),
                           image=json_data.get('image'), donor_id=user.id, lat=json_data.get('lat'),
-                          lng=json_data.get('lng'), phone_no=json_data.get('phone_no'))
+                          lng=json_data.get('lng'), time_stamp=json_data.get('time_stamp'), 
+                          phone_no=json_data.get('phone_no'))
         elif type == 'beneficiary':
             user = Beneficiary.query.filter_by(username=username).first()
             event = Event(name=json_data.get('name'), description=json_data.get('description'),
                           start_date=json_data.get('start_date'), end_date=json_data.get('end_date'),
-                          image=json_data.get('image'), beneficiary_id=user.id, lat=json_data.get('lat'),
+                          image=json_data.get('image'), time_stamp=json_data.get('time_stamp'), beneficiary_id=user.id, lat=json_data.get('lat'),
                           lng=json_data.get('lng'), phone_no=json_data.get('phone_no'))
         db.session.add(event)
         db.session.commit()
@@ -787,7 +788,7 @@ class EventRoute(Resource):
         event_list = []
         for event in events:
             e = {"event_id": event.id, "start_date": event.expiry, "description": event.description,
-                 "end_date": event.end_date,"lat": event.lat, "lng":event.lng, "image": event.image,
+                 "end_date": event.end_date, "lat": event.lat, "time_stamp": event.time_stamp, "lng": event.lng, "image": event.image,
                   "name": event.name}
             event_list.append(e)
         return {"events": event_list}, 200
