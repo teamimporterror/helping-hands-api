@@ -700,6 +700,7 @@ class LoginAdmin(Resource):
         else:
             return None
 
+@app.route('/')
 
 class BeneficiaryVerification(Resource):
     @token_required
@@ -718,6 +719,8 @@ class BeneficiaryVerification(Resource):
         beneficiary.sociallink2 = json_data.get('sociallink2')
         beneficiary.sociallink3 = json_data.get('sociallink3')
         beneficiary.past_record = json_data.get('past_record')
+        db.session.commit()
+        return {"message": "got it"}, 200
 
 
     @token_required
@@ -733,7 +736,7 @@ class BeneficiaryVerification(Resource):
         u = {'first_name': user.first_name, 'last_name': user.last_name, 'id': user.id, 'phone_no': user.phone_no,
              'email': user.email, 'username': user.username, 'street': address.street, 'landmark': address.landmark,
              'city': address.city, 'country': address.country, 'module': user.module, 'ngo_name': user.ngo_name,
-             'image': user.image, 'sociallink1': user.sociallink1 'sociallink2': user.sociallink2, 'sociallink3': user.sociallink3
+             'image': user.image, 'sociallink1': user.sociallink1, 'sociallink2': user.sociallink2, 'sociallink3': user.sociallink3,
              'past_record': user.past_record}
         return {"user": u}, 200
 
@@ -785,5 +788,5 @@ api.add_resource(UploadImage, '/uploadimage')
 api.add_resource(ModulesRoute, '/modules')
 api.add_resource(LoginAdmin, '/admin/login')
 api.add_resource(EventRoute, '/event')
-api.add_resource(BeneficiaryVerification, '<module>/verify')
+api.add_resource(BeneficiaryVerification, '/<module>/verify')
 
