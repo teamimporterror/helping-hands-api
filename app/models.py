@@ -111,6 +111,9 @@ class Event(db.Model):
     end_date = db.Column(db.String(25))
     phone_no = db.Column(db.String(25))
     image = db.Column(db.String(100))
+    lat = db.Column(db.String(40))
+    lng = db.Column(db.String(40))
+    phone_no = db.Column(db.String(40))
     donor_id = db.Column(db.Integer, db.ForeignKey('donor.id'))
     beneficiary_id = db.Column(db.Integer, db.ForeignKey('beneficiary.id'))
 

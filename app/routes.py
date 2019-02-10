@@ -770,12 +770,14 @@ class EventRoute(Resource):
             user = Donor.query.filter_by(username=username).first()
             event = Event(name=json_data.get('name'), description=json_data.get('description'),
                           start_date=json_data.get('start_date'), end_date=json_data.get('end_date'),
-                          image=json_data.get('image'), donor_id=user.id  )
+                          image=json_data.get('image'), donor_id=user.id, lat=json_data.get('lat'),
+                          lng=json_data.get('lng'), phone_no=json_data.get('phone_no'))
         elif type == 'beneficiary':
             user = Beneficiary.query.filter_by(username=username).first()
             event = Event(name=json_data.get('name'), description=json_data.get('description'),
                           start_date=json_data.get('start_date'), end_date=json_data.get('end_date'),
-                          image=json_data.get('image'), beneficiary_id=user.id  )
+                          image=json_data.get('image'), beneficiary_id=user.id, lat=json_data.get('lat'),
+                          lng=json_data.get('lng'), phone_no=json_data.get('phone_no'))
         db.session.add(event)
         db.session.commit()
         return {'message': "event added to database"}, 200
@@ -785,7 +787,8 @@ class EventRoute(Resource):
         event_list = []
         for event in events:
             e = {"event_id": event.id, "start_date": event.expiry, "description": event.description,
-                 "end_date": event.end_date, "image": event.image, "name": event.name}
+                 "end_date": event.end_date,"lat": event.lat, "lng":event.lng, "image": event.image,
+                  "name": event.name}
             event_list.append(e)
         return {"events": event_list}, 200
 
