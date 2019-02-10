@@ -703,11 +703,9 @@ class LoginAdmin(Resource):
 @app.route('/mark_verify', methods=['POST'])
 @token_required
 def mark_verify():
-        token = request.headers.get("x-access-token")
-        token_data = jwt.decode(token, app.config['SECRET_KEY'])
-        username = token_data.get("username")
-        beneficiary = Beneficiary.query.filter_by(username=username).first()
         json_data = request.json
+        beneficiary_id = json_data.get("beneficiary_id")
+        beneficiary = Beneficiary.query.get(beneficiary_id)
         beneficiary.status == json_data.get('status')  
         db.session.commit()
         return jsonify({"message": "status updated for beneficiary"}), 200
@@ -748,7 +746,7 @@ class BeneficiaryVerification(Resource):
 
 class AdminCheck(Resource):
     @token_required
-    def get(self, module):
+    def get(self):
         beneficiary_id = request.args.get("beneficiary_id")
         user = Beneficiary.query.get(beneficiary_id)
         address = Address.query.filter_by(beneficiary_id=user.id).first()
