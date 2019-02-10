@@ -719,7 +719,7 @@ class BeneficiaryVerification(Resource):
         token = request.headers.get("x-access-token")
         token_data = jwt.decode(token, app.config['SECRET_KEY'])
         token_module = token_data.get('module')
-        json_data = request.post
+        json_data = request.json
         if token_module != module:
             return {"message": "not allowed"}, 400
         username = token_data.get("username")
