@@ -282,7 +282,7 @@ class Listing(Resource):
                     continue
                 l = {"listing_id": listing.id,
                      "quantity": listing.quantity, "expiry": listing.expiry, "description": listing.description,
-                     "type": listing.type, "image": listing.image, "lat": listing.lat, "lng": listing.lng, "donor_id": listing.donor_id,
+                     "type": listing.type, "image": listing.image, "lat": int(listing.lat), "lng": int(listing.lng), "donor_id": listing.donor_id,
                      "street": address.street, "landmark": address.landmark, "city": address.city, "country": address.country, 
                      'organisation': donor.organisation, "module": listing.module}
                 listing_list.append(l)
@@ -779,7 +779,7 @@ class EventRoute(Resource):
         db.session.add(event)
         db.session.commit()
         return {'message': "event added to database"}, 200
-    
+   
     def get(self):
         events = Event.query.all()
         event_list = []
@@ -793,7 +793,7 @@ class EventRoute(Resource):
 # def show_all_listing_latitudes():
 #     listings = Listings.query.filter(id==1)
 #     print(listings)
-#     return "hello"
+    # return "hello"
 
 
 # class RequestModuleRoute(Resource):
