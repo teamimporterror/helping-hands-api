@@ -746,15 +746,11 @@ class BeneficiaryVerification(Resource):
         return {"message": "got it"}, 200
 
 
+class AdminCheck(Resource):
     @token_required
     def get(self, module):
-        token = request.headers.get("x-access-token")
-        token_data = jwt.decode(token, app.config['SECRET_KEY'])
-        token_module = token_data.get('module')
-        if token_module != module:
-            return {"message": "not allowed"}, 400
-        username = token_data.get("username")
-        user = Beneficiary.query.filter_by(username=username).first()
+        beneficiary_id = request.args.get("beneficiary_id")
+        user = Beneficiary.query.get(beneficiary_id)
         address = Address.query.filter_by(beneficiary_id=user.id).first()
         u = {'first_name': user.first_name, 'last_name': user.last_name, 'id': user.id, 'phone_no': user.phone_no,
              'email': user.email, 'username': user.username, 'street': address.street, 'landmark': address.landmark,
@@ -802,6 +798,39 @@ class EventRoute(Resource):
 #     return "hello"
 
 
+# class RequestModuleRoute(Resource):
+#     @token_required
+#     def post(self):      # use this module variable to validate.
+#         json_data = request.json
+#         token = request.headers.get("x-access-token")
+#         token_data = jwt.decode(token, app.config['SECRET_KEY'])
+#         type = token_data.get('type')
+#         username = token_data.get("username")
+#         if type == 'donor':
+#             user = Donor.query.filter_by(username=username).first()
+#             event = Event(name=json_data.get('name'), description=json_data.get('description'),
+#                           start_date=json_data.get('start_date'), end_date=json_data.get('end_date'),
+#                           image=json_data.get('image'), donor_id=user.id  )
+#         elif type == 'beneficiary':
+#             user = Beneficiary.query.filter_by(username=username).first()
+#             event = Event(name=json_data.get('name'), description=json_data.get('description'),
+#                           start_date=json_data.get('start_date'), end_date=json_data.get('end_date'),
+#                           image=json_data.get('image'), beneficiary_id=user.id  )
+#         db.session.add(event)
+#         db.session.commit()
+#         return {'message': "event added to database"}, 200
+    
+#     def get(self):
+#         events = Event.query.all()
+#         event_list = []
+#         for event in events:
+#             e = {"event_id": event.id, "start_date": event.expiry, "description": event.description,
+#                  "end_date": event.end_date, "image": event.image, "name": event.name}
+#             event_list.append(e)
+#         return {"events": event_list}, 200
+
+
+
 api.add_resource(Login, '/<module>/login')
 api.add_resource(Listing, '/<module>/listing')
 api.add_resource(Order, '/<module>/order')
@@ -818,4 +847,6 @@ api.add_resource(ModulesRoute, '/modules')
 api.add_resource(LoginAdmin, '/admin/login')
 api.add_resource(EventRoute, '/event')
 api.add_resource(BeneficiaryVerification, '/<module>/verify')
+api.add_resource(AdminCheck, '/admin/verify')
+# api.add_resource(RequestModuleRoute, '/admin/request')
 

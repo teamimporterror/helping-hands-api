@@ -113,3 +113,12 @@ class Event(db.Model):
     image = db.Column(db.String(100))
     donor_id = db.Column(db.Integer, db.ForeignKey('donor.id'))
     beneficiary_id = db.Column(db.Integer, db.ForeignKey('beneficiary.id'))
+
+
+class RequestModel(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    donor_id = db.Column(db.Integer, db.ForeignKey('donor.id'),
+                         nullable=False)
+    beneficiary_id = db.Column(db.Integer, db.ForeignKey('beneficiary.id'),
+                               nullable=False)
+    request_module = db.Column(db.String(20))
