@@ -243,17 +243,19 @@ class Login(Resource):
             user = Beneficiary.query.filter_by( email=user_data.get('email')).first()
             organisation = ""
             type = 'beneficiary'
+            status = user.status
         else:
             user = Donor.query.filter_by(email=user_data.get('email')).first()
             organisation = user.organisation
             type = 'donor'
+            status = ""
         if user.module != module:
             return None
             # return {"message": "no account 0"}
         if user and bcrypt.check_password_hash(user.password_hash, user_data.get('password')):
             token = jwt.encode(
                 {'username': user.username, 'first_name': user.first_name, 'organisation': organisation,
-                 'last_name': user.last_name, 'type': type, 'id': user.id, 'module': user.module,
+                 'last_name': user.last_name, 'type': type, 'id': user.id, 'module': user.module, "status": status,
                     'exp': datetime.datetime.utcnow() + datetime.timedelta(days=365)},
                 app.config['SECRET_KEY'])
             return {'token': token.decode('UTF-8')}, 200
@@ -699,7 +701,44 @@ class LoginAdmin(Resource):
             return None
 
 
-class Event(Resource):
+class BeneficiaryVerification(Resource):
+    @token_required
+    def post(self, module):
+        token = request.headers.get("x-access-token")
+        token_data = jwt.decode(token, app.config['SECRET_KEY'])
+        token_module = token_data.get('module')
+        json_data = request.post
+        if token_module != module:
+            return {"message": "not allowed"}, 400
+        username = token_data.get("username")
+        beneficiary = Beneficiary.query.filter_by(username=username).first()
+        beneficiary.ngo_name = json_data.get('ngo_name')
+        beneficiary.image = json_data.get('image')
+        beneficiary.sociallink1 = json_data.get('sociallink1')
+        beneficiary.sociallink2 = json_data.get('sociallink2')
+        beneficiary.sociallink3 = json_data.get('sociallink3')
+        beneficiary.past_record = json_data.get('past_record')
+
+
+    @token_required
+    def get(self, module):
+        token = request.headers.get("x-access-token")
+        token_data = jwt.decode(token, app.config['SECRET_KEY'])
+        token_module = token_data.get('module')
+        if token_module != module:
+            return {"message": "not allowed"}, 400
+        username = token_data.get("username")
+        user = Beneficiary.query.filter_by(username=username).first()
+        address = Address.query.filter_by(beneficiary_id=user.id).first()
+        u = {'first_name': user.first_name, 'last_name': user.last_name, 'id': user.id, 'phone_no': user.phone_no,
+             'email': user.email, 'username': user.username, 'street': address.street, 'landmark': address.landmark,
+             'city': address.city, 'country': address.country, 'module': user.module, 'ngo_name': user.ngo_name,
+             'image': user.image, 'sociallink1': user.sociallink1 'sociallink2': user.sociallink2, 'sociallink3': user.sociallink3
+             'past_record': user.past_record}
+        return {"user": u}, 200
+
+
+class EventRoute(Resource):
     @token_required
     def post(self):      # use this module variable to validate.
         json_data = request.json
@@ -745,5 +784,6 @@ api.add_resource(DonorOrders, '/<module>/donor/orders')
 api.add_resource(UploadImage, '/uploadimage')
 api.add_resource(ModulesRoute, '/modules')
 api.add_resource(LoginAdmin, '/admin/login')
-api.add_resource(Event, '/event')
+api.add_resource(EventRoute, '/event')
+api.add_resource(BeneficiaryVerification, '<module>/verify')
 
