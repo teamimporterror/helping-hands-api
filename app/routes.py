@@ -787,7 +787,7 @@ class EventRoute(Resource):
         events = Event.query.all()
         event_list = []
         for event in events:
-            e = {"event_id": event.id, "start_date": event.expiry, "description": event.description,
+            e = {"event_id": event.id, "start_date": event.start_date, "description": event.description,
                  "end_date": event.end_date, "lat": event.lat, "time_stamp": event.time_stamp, "lng": event.lng, "image": event.image,
                   "name": event.name}
             event_list.append(e)
