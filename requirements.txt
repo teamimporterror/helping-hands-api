@@ -39,5 +39,5 @@ six==1.11.0
 SQLAlchemy==1.2.12
 tweepy==3.7.0
 urllib3==1.24.1
-Werkzeug==0.14.1
+Werkzeug==0.15.3
 WTForms==2.2.1
